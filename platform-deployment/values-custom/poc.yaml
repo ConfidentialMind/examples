@@ -14,11 +14,15 @@ dependencies:
     nvidia:
       # Deploy Nvidia components
       enabled: true
-  # Deploy Longhorn CSI storage. *Required (usually)* for K3s-like PoC clusters on-premises. *Optional* for the most of managed K8s clusters.
+
+  # Deploy Longhorn CSI storage.
+  #  *Required (usually)* for K3s-like PoC clusters on-premises.
+  #  *Optional* for the most of managed K8s clusters.
   # IMPORTANT: Longhorn CSI prerequisites on the host OS level:
   # Debian: 'apt install open-iscsi nfs-common cryptsetup'
   # RedHat: 'dnf install iscsi-initiator-utils nfs-utils cryptsetup'
   longhornCsi: true
+
   volumeSnapshotComponents:
     driver:
       # VolumeSnapshotClass driver name. Possible values:
