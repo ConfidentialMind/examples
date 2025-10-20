@@ -1,5 +1,8 @@
 # CM Platform Configuration Values
 
+# Controls HA and replication settings
+profile: standard
+
 dns:
   # Base domain for all services. Example: 'cm-platform-prod.example.com'
   baseDomain: <base>.<your-domain>.<com>
