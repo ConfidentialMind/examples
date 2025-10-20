@@ -1,0 +1,27 @@
+# CM Platform Configuration Values
+
+dns:
+  # Base domain for all services. Example: 'cm-platform-prod.example.com'
+  baseDomain: <subdomain>.<your-domain>.<com>
+
+tls:
+  letsEncrypt:
+    # Email for Let's Encrypt certificate generation
+    email: <admin>@<your-domain>.<com>
+
+dependencies:
+  gpu:
+    nvidia:
+      # Deploy Nvidia components
+      enabled: true
+  # Deploy Longhorn CSI storage. *Required (usually)* for K3s-like PoC clusters on-premises. *Optional* for the most of managed K8s clusters.
+  # IMPORTANT: Longhorn CSI prerequisites on the host OS level:
+  # Debian: 'apt install open-iscsi nfs-common cryptsetup'
+  # RedHat: 'dnf install iscsi-initiator-utils nfs-utils cryptsetup'
+  longhornCsi: true
+  volumeSnapshotComponents:
+    driver:
+      # VolumeSnapshotClass driver name. Possible values:
+      # 'driver.longhorn.io' - for Longhorn CSI
+      # 'your.csi.driver' - for your CSI drivers
+      name: driver.longhorn.io
