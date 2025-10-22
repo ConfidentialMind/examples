@@ -1,0 +1,14 @@
+# It works with k3s CoreDNS, since the default config has an import statement for custom server configs.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: coredns-custom
+  namespace: kube-system
+data:
+  custom.server: |
+    example.local {
+        hosts {
+              192.168.0.123 example.local
+              fallthrough
+        }
+    }
