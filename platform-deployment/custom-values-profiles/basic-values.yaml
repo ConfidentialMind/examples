@@ -1,0 +1,41 @@
+# CM Platform Configuration Values
+dns:
+  # Base domain for all services. Example: 'cm-platform-prod.example.com'
+  baseDomain: <base>.<your-domain>.<com>
+
+# Uncomment and configure relevant sections to use other than default self-signed TLS certificate.
+# tls:
+#   # # (default) Self-signed certificate generation.
+#   # certificateSource: selfsigned
+  
+#   # # Let's Encrypt certificate generation.
+#   # # Requires valid a public domain and email configuration.
+#   # certificateSource: letsencrypt
+#   # letsEncrypt:
+#   #   # Email for Let's Encrypt certificate generation
+#   #   email: <admin>@<your-domain>.<com>
+
+#   # # Provide own TLS certificate and private key.
+#   # # Requires valid certificate and key files in the 'own-cert' directory.
+#   # # helm upgrade --install cm-platform ... \
+#   # # ...
+#   # # --set-file tls.own.fullchainCertificate=own-cert/fullchain.pem \
+#   # # --set-file tls.own.privateKey=own-cert/privkey.pem
+#   # certificateSource: own
+  
+
+# Uncomment and configure relevant sections to enable additional dependencies.
+# dependencies:
+#   gpu:
+#    nvidia:
+#      # Deploy Nvidia components
+#      enabled: false
+#
+#   # Deploy Longhorn CSI storage.
+#   #  *Required (usually)* for K3s-like PoC clusters on-premises.
+#   #  *Optional* for the most of managed K8s clusters.
+#   # IMPORTANT: Longhorn CSI prerequisites on the host OS level:
+#   # Debian: 'apt install open-iscsi nfs-common cryptsetup'
+#   # RedHat: 'dnf install iscsi-initiator-utils nfs-utils cryptsetup'
+#   longhornCsi:
+#     enabled: false
