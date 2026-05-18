@@ -1,0 +1,46 @@
+#this needs to be moved to docs or a public repo
+
+argocd:
+  openshift:
+    enabled: true
+
+dependencies:
+  certManager:
+    deploy: true
+  cnpg:
+    containerSecurityContextNull: true
+  istio:
+    base:
+      deploy: false
+    ingressgateway:
+      deploy: true
+      containerSecurityContextNull: true
+      service:
+        type: ClusterIP
+    istiod:
+      deploy: false
+  kiali:
+    deploy: false
+  opentelemetryOperator:
+    securityContextNull: true
+  purplePill:
+    openshift: true
+  prometheus:
+    deploy: false
+    deployScrapeconfigsCRDOnly: true
+  tekton:
+    openshift: true
+
+monitoring:
+  prometheus:
+    host: "prometheus-k8s.openshift-monitoring.svc.cluster.local"
+    port: 9091
+    tls:
+      ca:
+        configMap:
+          name: "ocp-service-ca"
+          openshiftServiceCa: true
+        custom: true
+      enabled: true
+    tokenAuth: true
+
