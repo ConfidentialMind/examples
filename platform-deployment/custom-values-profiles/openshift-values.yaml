@@ -32,6 +32,9 @@ dependencies:
     openshift: true
 
 monitoring:
+  otel:
+    openshift:
+      enabled: true
   prometheus:
     host: "prometheus-k8s.openshift-monitoring.svc.cluster.local"
     port: 9091
