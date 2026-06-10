@@ -1,0 +1,83 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: istio-system
+---
+apiVersion: sailoperator.io/v1
+kind: Istio
+metadata:
+  name: default
+spec:
+  namespace: istio-system
+  updateStrategy:
+    type: InPlace
+    inactiveRevisionDeletionGracePeriodSeconds: 30
+  values:
+    meshConfig:
+      extensionProviders:
+        - name: "oauth2-proxy"
+          envoyExtAuthzHttp:
+            service: "oauth-proxy.tools.svc.cluster.local"
+            port: 4180
+            includeHeadersInCheck:
+              - "authorization"
+              - "cookie"
+              - "x-forwarded-access-token"
+              - "x-forwarded-user"
+              - "x-forwarded-email"
+              - "x-forwarded-proto"
+              - "proxy-authorization"
+              - "user-agent"
+              - "x-forwarded-host"
+              - "from"
+              - "x-forwarded-for"
+              - "accept"
+              - "x-auth-request-redirect"
+            headersToUpstreamOnAllow:
+              - "authorization"
+              - "path"
+              - "cookie"
+              - "x-auth-request-user"
+              - "x-auth-request-email"
+              - "x-auth-request-access-token"
+              - "x-forwarded-access-token"
+            headersToDownstreamOnDeny:
+              - "content-type"
+              - "set-cookie"
+        - name: "cm-authn"
+          envoyExtAuthzGrpc:
+            service: "authn.api-services.svc.cluster.local"
+            port: 80
+            failOpen: false
+      enablePrometheusMerge: false
+      accessLogFile: /dev/stdout
+      accessLogEncoding: JSON
+      accessLogFormat: |
+        {
+          "start_time": "%START_TIME%",
+          "method": "%REQ(:METHOD)%",
+          "path": "%REQ(X-ENVOY-ORIGINAL-PATH?:PATH)%",
+          "authority": "%REQ(:AUTHORITY)%",
+          "protocol": "%PROTOCOL%",
+          "response_code": "%RESPONSE_CODE%",
+          "response_flags": "%RESPONSE_FLAGS%",
+          "bytes_received": "%BYTES_RECEIVED%",
+          "bytes_sent": "%BYTES_SENT%",
+          "duration_ms": "%DURATION%",
+          "authorization": "%REQ(Authorization)%",
+          "upstream_cluster": "%UPSTREAM_CLUSTER_RAW%"
+        }
+      enableTracing: true
+    pilot:
+      enabled: true
+      autoscaleEnabled: true
+      env:
+        ENABLE_NATIVE_SIDECARS: "true"
+    telemetry:
+      v2:
+        prometheus:
+          enabled: true
+        enabled: true
+      enabled: true
+  version: v1.28.6
+  profile: openshift

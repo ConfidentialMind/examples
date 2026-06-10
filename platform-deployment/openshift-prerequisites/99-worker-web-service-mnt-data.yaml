@@ -1,0 +1,37 @@
+apiVersion: machineconfiguration.openshift.io/v1
+kind: MachineConfig
+metadata:
+  labels:
+    machineconfiguration.openshift.io/role: worker
+  name: 99-worker-web-service-mnt-data
+spec:
+  config:
+    ignition:
+      version: 3.4.0
+    storage:
+      files:
+        - append:
+            - source: >-
+                data:text/plain;base64,L21udC9kYXRhKC8uKik/ICAgIHN5c3RlbV91Om9iamVjdF9yOmNvbnRhaW5lcl9maWxlX3Q6czAK
+          mode: 420
+          overwrite: false
+          path: /etc/selinux/targeted/contexts/files/file_contexts.local
+    systemd:
+      units:
+        - contents: |
+            [Unit]
+            Description=Create and label /mnt/data for GPU model cache
+            DefaultDependencies=no
+            After=local-fs.target
+            Before=kubelet.service crio.service
+
+            [Service]
+            Type=oneshot
+            RemainAfterExit=yes
+            ExecStart=/bin/mkdir -p /mnt/data
+            ExecStart=/sbin/restorecon -R /mnt/data
+
+            [Install]
+            WantedBy=multi-user.target
+          enabled: true
+          name: gpu-worker-mnt-data.service

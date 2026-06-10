@@ -1,0 +1,37 @@
+apiVersion: machineconfiguration.openshift.io/v1
+kind: MachineConfig
+metadata:
+  labels:
+    machineconfiguration.openshift.io/role: worker
+  name: 99-worker-ome-llm-cache
+spec:
+  config:
+    ignition:
+      version: 3.4.0
+    storage:
+      files:
+        - append:
+            - source: >-
+                data:text/plain;base64,L21udC9sbG1fY2FjaGUoLy4qKT8gICAgc3lzdGVtX3U6b2JqZWN0X3I6Y29udGFpbmVyX2ZpbGVfdDpzMAo=
+          mode: 420
+          overwrite: false
+          path: /etc/selinux/targeted/contexts/files/file_contexts.local
+    systemd:
+      units:
+        - contents: |
+            [Unit]
+            Description=SELinux-label OME LLM cache directory
+            DefaultDependencies=no
+            After=local-fs.target
+            Before=kubelet.service crio.service
+
+            [Service]
+            Type=oneshot
+            RemainAfterExit=yes
+            ExecStart=/bin/mkdir -p /mnt/llm_cache
+            ExecStart=/sbin/restorecon -R /mnt/llm_cache
+
+            [Install]
+            WantedBy=multi-user.target
+          enabled: true
+          name: ome-llm-cache-dir.service
