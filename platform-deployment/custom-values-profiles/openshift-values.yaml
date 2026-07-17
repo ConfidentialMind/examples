@@ -1,19 +1,14 @@
-#this needs to be moved to docs or a public repo
-
 argocd:
   openshift:
     enabled: true
 
 dependencies:
-  certManager:
-    deploy: true
   cnpg:
     containerSecurityContextNull: true
   istio:
     base:
       deploy: false
     ingressgateway:
-      deploy: true
       containerSecurityContextNull: true
       service:
         type: ClusterIP
@@ -23,13 +18,22 @@ dependencies:
     deploy: false
   opentelemetryOperator:
     securityContextNull: true
+  ome:
+    openshift:
+      enabled: true
   purplePill:
-    openshift: true
+    openshift:
+      enabled: true
   prometheus:
     deploy: false
     deployScrapeconfigsCRDOnly: true
   tekton:
-    openshift: true
+    openshift:
+      enabled: true
+
+dns:
+  openshift:
+    routes: true
 
 monitoring:
   otel:
@@ -47,3 +51,12 @@ monitoring:
       enabled: true
     tokenAuth: true
 
+routing:
+  openshift:
+    routes: true  # Only `passthrough` Routes creation is supported by this chart.
+                  # For `reencrypt`, set this to `false` and
+                  # install Routes manually using stanadlone `openshift-tls-reencrypt` chart.
+  istio:
+    ingress:
+      gateway:
+        catchAll: true
