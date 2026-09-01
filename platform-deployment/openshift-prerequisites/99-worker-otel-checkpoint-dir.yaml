@@ -8,30 +8,24 @@ spec:
   config:
     ignition:
       version: 3.4.0
-    storage:
-      files:
-        - path: /etc/selinux/targeted/contexts/files/file_contexts.local
-          mode: 0644
-          overwrite: false
-          append:
-            - source: "data:text/plain;base64,L3Zhci9vdGVsL2ZpbGUtY2hlY2twb2ludHMoLy4qKT8gICAgc3lzdGVtX3U6b2JqZWN0X3I6Y29udGFpbmVyX2ZpbGVfdDpzMAo="
     systemd:
       units:
         - name: otel-checkpoint-dir.service
           enabled: true
           contents: |
             [Unit]
-            Description=Create and SELinux-label OTel filelog checkpoint directory
+            Description=Prepare OTel filelog checkpoint directory
             DefaultDependencies=no
             After=local-fs.target
-            Before=kubelet.service crio.service
-            ConditionPathIsDirectory=!/var/otel/file-checkpoints
+            Before=crio.service kubelet.service
 
             [Service]
             Type=oneshot
             RemainAfterExit=yes
             ExecStart=/bin/mkdir -p /var/otel/file-checkpoints
-            ExecStart=/sbin/restorecon -R -v /var/otel/file-checkpoints
+            ExecStart=/usr/bin/chown root:root /var/otel/file-checkpoints
+            ExecStart=/usr/bin/chmod 0755 /var/otel/file-checkpoints
+            ExecStart=/usr/bin/chcon -R -t container_file_t -l s0 /var/otel/file-checkpoints
 
             [Install]
             WantedBy=multi-user.target
