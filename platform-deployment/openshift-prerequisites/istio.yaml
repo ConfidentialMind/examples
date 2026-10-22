@@ -64,7 +64,6 @@ spec:
           "bytes_received": "%BYTES_RECEIVED%",
           "bytes_sent": "%BYTES_SENT%",
           "duration_ms": "%DURATION%",
-          "authorization": "%REQ(Authorization)%",
           "upstream_cluster": "%UPSTREAM_CLUSTER_RAW%"
         }
       enableTracing: true
