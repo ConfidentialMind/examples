@@ -3,6 +3,9 @@ argocd:
     enabled: true
 
 dependencies:
+  externalSecrets:
+    openshift:
+      enabled: true
   cnpg:
     containerSecurityContextNull: true
   istio:
