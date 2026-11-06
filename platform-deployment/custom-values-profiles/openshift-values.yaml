@@ -63,3 +63,8 @@ routing:
     ingress:
       gateway:
         catchAll: true
+
+services:
+  mcpDeployment:
+    openshift:
+      enabled: true
